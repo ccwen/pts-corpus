@@ -6,7 +6,7 @@ const createCorpus=require("ksana-corpus-builder").createCorpus;
 const fs=require("fs");
 const sourcepath="../pts-dhammakaya/htll/";
 const files=fs.readFileSync(sourcepath+"file.lst","utf8").split(/\r?\n/);
-files.length=1;
+//files.length=7;
 var prevpage;
 var inlineNotes={};
 const fileStart=function(fn,i){
@@ -19,7 +19,9 @@ const onTag=function(tag){
 	const first=tag[0], payload=tag.substr(1);
 	if (first==="~") {
 		const r=payload.split(".");
-		const kpos=this.makeKPos( parseInt(r[0],10), parseInt(r[1],10), 0,0);
+		const vol=parseInt(r[0],10)-1;
+		const page=parseInt(r[1],10)-1;
+		const kpos=this.makeKPos( vol, page, 0,0);
 		this.newLine(kpos, this.tPos);
 	} else if (first==="^") {
 		this.putField("p",payload);
