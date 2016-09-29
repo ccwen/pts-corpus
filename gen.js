@@ -10,7 +10,10 @@ const files=fs.readFileSync(sourcepath+"file.lst","utf8").split(/\r?\n/);
 var prevpage;
 var inlineNotes={};
 const fileStart=function(fn,i){
-	console.log(fn,i)
+	console.log(fn);
+	var at=fn.lastIndexOf("/");
+	const f=fn.substr(at+1);
+	this.putField("file",f);
 }
 const onFinalizeFields=function(fields){
 
