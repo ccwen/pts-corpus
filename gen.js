@@ -1,12 +1,10 @@
 /*
 generate pts.cor from pts-dhammakaya
 */
-const Ksanapos=require("ksana-corpus/ksanapos");
 const createCorpus=require("ksana-corpus-builder").createCorpus;
 const fs=require("fs");
 const sourcepath="../pts-dhammakaya/htll/";
 const files=fs.readFileSync(sourcepath+"file.lst","utf8").split(/\r?\n/);
-//files.length=7;
 var prevpage;
 var inlineNotes={};
 const fileStart=function(fn,i){
@@ -14,6 +12,7 @@ const fileStart=function(fn,i){
 	var at=fn.lastIndexOf("/");
 	const f=fn.substr(at+1);
 	this.putField("file",f);
+	this.putField("article",f);//file name as article
 }
 const onFinalizeFields=function(fields){
 
@@ -22,12 +21,12 @@ const onTag=function(tag){
 	const first=tag[0], payload=tag.substr(1);
 	if (first==="~") {
 		const r=payload.split(".");
-		const vol=parseInt(r[0],10)-1;
+		const vol=parseInt(r[0],10);
 		const page=parseInt(r[1],10)-1;
 		const kpos=this.makeKPos( vol, page, 0,0);
 		this.newLine(kpos, this.tPos);
 	} else if (first==="^") {
-		this.putField("p",payload);
+		this.putBookField("p",payload);
 	} else if (first==="#") {
 
 	} else if (first==="@") {
@@ -39,10 +38,10 @@ const onTag=function(tag){
 const onContent=function(content){ //remove dhammakaya correction mark
 	return content.replace(/[{}]/g,"");
 }
-const options={inputFormat:"htll",bitPat:"pts", 
-autoStart:true, textOnly:true
+const options={inputFormat:"htll",bitPat:"pts", language:"pali",
+autoStart:true, textOnly:true,name:"pts"
 }; //set textOnly not to build inverted
-const corpus=createCorpus("pts",options);
+const corpus=createCorpus(options);
 corpus.setHandlers(
 	{}, //open tag handlers
 	{},  //end tag handlers
