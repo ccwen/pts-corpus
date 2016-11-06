@@ -4,7 +4,8 @@ generate pts.cor from pts-dhammakaya
 const createCorpus=require("ksana-corpus-builder").createCorpus;
 const fs=require("fs");
 const sourcepath="../pts-dhammakaya/htll/";
-const files=fs.readFileSync(sourcepath+"file.lst","utf8").split(/\r?\n/);
+var files=fs.readFileSync(sourcepath+"file.lst","utf8").split(/\r?\n/);
+//files.length=6;
 var prevpage;
 var inlineNotes={};
 const fileStart=function(fn,i){
@@ -12,11 +13,9 @@ const fileStart=function(fn,i){
 	var at=fn.lastIndexOf("/");
 	const f=fn.substr(at+1);
 	this.putField("file",f);
-	this.putField("article",f);//file name as article
+	this.putArticle(f);//file name as article
 }
-const onFinalizeFields=function(fields){
 
-}
 const onTag=function(tag){
 	const first=tag[0], payload=tag.substr(1);
 	if (first==="~") {
@@ -26,7 +25,7 @@ const onTag=function(tag){
 		const kpos=this.makeKPos( vol, page, 0,0);
 		this.newLine(kpos, this.tPos);
 	} else if (first==="^") {
-		this.putBookField("p",payload);
+		this.putArticleField("p",payload);
 	} else if (first==="#") {
 
 	} else if (first==="@") {
